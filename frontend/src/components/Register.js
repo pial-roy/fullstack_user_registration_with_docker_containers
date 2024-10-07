@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 
 const Register = () => {
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -12,12 +15,13 @@ const Register = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ username, email, password }),
     });
 
     if (response.ok) {
       alert('User registered successfully!');
       setUsername('');
+      setEmail('')
       setPassword('');
     } else {
       const errorData = await response.json();
@@ -38,6 +42,17 @@ const Register = () => {
             required
           />
         </div>
+        
+        <div>
+          <label>Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        
         <div>
           <label>Password:</label>
           <input

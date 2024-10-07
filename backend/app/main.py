@@ -23,6 +23,7 @@ app.add_middleware(
 # User registration model
 class UserCreate(BaseModel):
     username: str
+    email: str
     password: str
 
 @app.post("/register/")
@@ -31,9 +32,10 @@ async def register_user(user: UserCreate):
     
     # Check if the username already exists
     existing_user = await db.users.find_one({"username": user.username})
+    existing_email = await db.users.find_one({"email": user.email})
     
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Username already registered")
+    if existing_user or existing_email:
+        raise HTTPException(status_code=400, detail="email already registered")
     
     # Hash the password
     hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt())
@@ -41,6 +43,7 @@ async def register_user(user: UserCreate):
     # Create the new user
     new_user = {
         "username": user.username,
+        "email": user.email,
         "password": hashed_password.decode('utf-8')
     }
     
